@@ -1,8 +1,6 @@
-/*
-ACCESS AccProduct (Product, PackType, Price);
+import JkProduct = JKDev/jkproduct;
 
--- tuid类型定义之后的un 表示字段可以按语言录入，可以中文，可以繁体，可以英文，zh-CN，en-US, en-CA
-TUID Product ver 0.9 (
+TUID Product ver 0.2 from JkProduct (
     id,
     main discription char(200) un not null,
     main packType ID PackType not null,
@@ -16,16 +14,15 @@ TUID Product ver 0.9 (
     unique (discription, packType),
 );
 
-TUID PackType ver 0.2 (
+TUID PackType ver 0.2 from JkProduct (
     id,
     main name char(8) not null,     -- g, ml, mg, kg, m, cm, mm, 套，台，个
     main discription char(20),      -- 说明是 重量，长度，面积，提及，单体
     unique (name),
 );
 
-MAP Price ver 0.3 (
+MAP Price ver 0.1 from JkProduct (
     key product ID Product not null,
     key pack OF product.Pack not null,
     retail dec(10,2) not null,
 );
-*/

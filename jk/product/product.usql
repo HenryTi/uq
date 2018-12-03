@@ -1,21 +1,27 @@
-
-access p (product);
-
 -- tuid类型定义之后的un 表示字段可以按语言录入，可以中文，可以繁体，可以英文，zh-CN，en-US, en-CA
-TUID product (
+OPEN TUID Product ver 0.1 (
     id,
-    discription char(200) un,
-    ARR packs (
+    main discription char(200) un not null,
+    main packType ID PackType not null,
+    ARR Pack (
         owner,
         id,
-        type ID PackType,
-        unit dec(8,3),
+        ratio dec(8,3),             -- 跟基本单位的换算率
         name char(8),               -- 可以为空，则自动unit+packtType name生成
     ),
+    search (discription),
+    unique (discription, packType),
 );
 
-TUID packType (
+OPEN TUID PackType ver 0.1 (
     id,
-    name char(8),                   -- g, ml, mg, kg, m, cm, mm, 套，台，个
-    discription char(20),           -- 说明是 重量，长度，面积，提及，单体
+    main name char(8) not null,     -- g, ml, mg, kg, m, cm, mm, 套，台，个
+    main discription char(20),      -- 说明是 重量，长度，面积，提及，单体
+    unique (name),
+);
+
+OPEN MAP Price ver 0.2 (
+    key product ID Product not null,
+    key pack OF product.Pack not null,
+    retail dec(10,2) not null,
 );

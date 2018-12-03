@@ -13,7 +13,9 @@ USQ devappApi version='1.01' author='henry';
 //schema1[a1, #a2, @a3]
 
 // 从center server 获得bus，busOwner=$$$, busName=test
-BUS bus1  '$$$/test' -- 'http://do.thplay.cn/tonva/tv.bus'
+// IMPORT TonvaTest = /test;
+
+BUS bus1 from /test -- 'http://do.thplay.cn/tonva/tv.bus'
     ACCEPT complex1 {
         book 账 at (a1, 1) set f1+=1, f2=1; -- where 1<>1;
         foreach arrName {

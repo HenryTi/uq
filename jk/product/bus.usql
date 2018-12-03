@@ -1,0 +1,15 @@
+BUS bus1 from /test
+    ACCEPT complex1 {
+        book 账 at (a1, 1) set f1+=1, f2=1; -- where 1<>1;
+        foreach arrName {
+            book 账 at (a1, 1) set f1+=1, f2=a2;
+        }
+    };
+
+
+BOOK 账 (
+    key k1 ID,
+    key k2 int,
+    f1 int,
+    f2 int,
+);

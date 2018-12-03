@@ -1,0 +1,4 @@
+ACTION test() {
+    BOOK price at(1,1) set retail=0.9;
+};
+

@@ -1,0 +1,45 @@
+TUID Face ver 0.3 global (
+    id,
+    main str char(200),
+    unique(str),
+);
+
+TUID BusQueue global (
+    id,
+    unit int,
+    face ID Face,
+    body text,
+
+    unique (unit, face, id)
+);
+
+QUERY GetBusMessages ver 1.2 (
+    faces text,
+    ufid text
+)
+RETURNS ret (
+    id bigint,
+    face int,
+    body text
+) {
+    var minId bigint;
+    set minId = (unix_timestamp()/3600 - 24*30)*1000000000;
+
+    table facesTable(key id int, face char(200));
+    text faces into facesTable;
+
+    table ufidTable(key face int, key unit int, msgId ID);
+    text ufid into ufidTable;
+
+    foreach (var face int, unit int, msgId bigint of select face, unit, msgId from ufidTable) {
+        if msgId is null or msgId<minId {
+            set msgId=minId;
+        }
+        into ret select a.id, a.face, a.body
+            from BusQueue as a
+                join Face as b on a.face=b.id
+            where b.str=(select c.face from facesTable as c where c.id=face)
+                and a.unit=unit and a.id>msgId
+            limit 1;
+    }
+};

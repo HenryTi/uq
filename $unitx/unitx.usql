@@ -198,6 +198,7 @@ ACTION sheetMessage (
     {
         message oldMsg away toUser;
         delete from desk where me=toUser and message=oldMsg;
+        delete a from sheet as a where a.usq=usq and a.sheet=sheet and a.message=oldMsg;
     }
 
     if state<>'#' and state<>'-' {

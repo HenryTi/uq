@@ -255,3 +255,4 @@ RETURNS ret (
             join entityOp as e on a.entityOp=e.id
         where e.usq=usq and e.entity=entityName and e.op=opName;
 };
+

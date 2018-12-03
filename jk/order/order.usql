@@ -17,6 +17,11 @@ Action submit {
     PENDING Receivable +(customer:1, product:2, pack:2, price:3.5*bbb) to recId;
     PENDING Receivable -at recId;
     PENDING Receivable -(price:2.5+amount) at recId del if 3*2=amount;
+    PENDING Receivable +(customer:1, product:2, pack:2, price:3.77*bbb) to recId;
+
+    bus bus1.complex1 set a1=1, c3=2, bbba37='a37';
+    bus bus1.complex1 into arrName add a1=3, a2=2, a3=now();
+    bus bus1.complex1 send; -- user=1 unit=3;
 }
 STATE deliver {
     ACTION finish {
