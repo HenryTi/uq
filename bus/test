@@ -3,7 +3,7 @@
         {"name": "a1", "type": "string"},
         {"name": "a2", "type": "number"},
         {"name": "a3", "type": "date"},
-        {"name": "a4", "type": "id"},
+        {"name": "a4", "type": "id"}
     ],
     "schema2": [
         {"name": "a3", "type": "string"},
@@ -14,6 +14,6 @@
         {"name": "a1", "type": "string"},
         {"name": "c3", "type": "string"},
         {"name": "bbba37", "type": "string"},
-        {"name": "arrName", "fields": "schema1"}
+        {"name": "arrName", "type": "array", "fields": "schema1"}
     ]
 }

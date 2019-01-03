@@ -30,3 +30,8 @@ STATE deliver {
 }
 ;
 
+HISTORY hist (
+    date,
+    key k1 ID Product,
+    e1 int,
+);

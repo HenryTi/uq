@@ -1,26 +1,8 @@
-schema1:
-  a1: string
-  a2: number
-  a3: date
-schema2:
-  a3: string
-  cb2: number
-  aa3 : date
-schema3:
-  a3: string
-  cb2: number
-  aa3: date
-
-complex1:
-  a1: string
-  c3: string
-  bbba37: number
-  arrName: [schema1]
 {
     "schema1": [
         {"name": "a1", "type": "string"},
         {"name": "a2", "type": "number"},
-        {"name": "a3", "type": "date"},
+        {"name": "a3", "type": "date"}
     ],
     "schema2": [
         {"name": "a3", "type": "string"},
@@ -36,6 +18,6 @@ complex1:
         {"name": "a1", "type": "string"},
         {"name": "c3", "type": "string"},
         {"name": "bbba37", "type": "string"},
-        {"name": "arrName", "fields": "schema1"}
+        {"name": "arrName", "type": "array", "fields": "schema1"}
     ]
 }

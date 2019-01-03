@@ -8,9 +8,21 @@ TUID BusQueue global (
     id,
     unit int,
     face ID Face,
+    from char(100),
     body text,
+    date datetime,
 
     unique (unit, face, id)
+);
+
+TUID Joint (
+    id,
+    main name char(100),
+    main discription char(200),
+    main ip char(32),
+    main facesIn text,              -- 可以写入的faces \n 分隔的 face：owner/bus/face
+    main facesOut text,             -- 可以读出的faces    
+    unique(name)
 );
 
 QUERY GetBusMessages ver 1.2 (
@@ -20,6 +32,7 @@ QUERY GetBusMessages ver 1.2 (
 RETURNS ret (
     id bigint,
     face int,
+    from char(100),
     body text
 ) {
     var minId bigint;
@@ -35,7 +48,7 @@ RETURNS ret (
         if msgId is null or msgId<minId {
             set msgId=minId;
         }
-        into ret select a.id, a.face, a.body
+        into ret select a.id, a.face, a.from, a.body
             from BusQueue as a
                 join Face as b on a.face=b.id
             where b.str=(select c.face from facesTable as c where c.id=face)
