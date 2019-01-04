@@ -25,13 +25,13 @@ TUID Joint (
     unique(name)
 );
 
-QUERY GetBusMessages ver 1.2 (
+QUERY GetBusMessages ver 1.3 (
     faces text,
     ufid text
 )
 RETURNS ret (
     id bigint,
-    face int,
+    face char(200),
     from char(100),
     body text
 ) {
@@ -48,7 +48,7 @@ RETURNS ret (
         if msgId is null or msgId<minId {
             set msgId=minId;
         }
-        into ret select a.id, a.face, a.from, a.body
+        into ret select a.id, b.str as face, a.from, a.body
             from BusQueue as a
                 join Face as b on a.face=b.id
             where b.str=(select c.face from facesTable as c where c.id=face)
