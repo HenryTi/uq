@@ -24,5 +24,6 @@ TUID PackType ver 0.2 from JkProduct (
 MAP Price ver 0.1 from JkProduct (
     key product ID Product not null,
     key pack OF product.Pack not null,
+    expireDate datetime,
     retail dec(10,2) not null,
 );

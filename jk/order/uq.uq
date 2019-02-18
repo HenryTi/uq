@@ -1,0 +1,13 @@
+UQ [JKDev]/[jkOrder] version='1.00' author='henry';
+
+-- SHEET:   all, create, read, list
+-- TUID:    all, create, read, list, write
+-- MAP:     all, create, read, list, write
+-- ACTION:  all, execute
+-- QUERY:   all, execute
+
+ACCESS AccCustomer (
+    Customer,
+    Order, -- create read list,
+);
+ACCESS AccOrder (Order);

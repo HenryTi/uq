@@ -1,5 +1,3 @@
-ACCESS AccCustomer (Customer);
-
 TUID Customer (
     id,
     main discription char(200),

@@ -6,6 +6,7 @@ TUID Product ver 0.9 (
     id,
     main discription char(200) un not null,
     main packType ID PackType not null,
+    a datetime,
     ARR Pack (
         owner,
         id,

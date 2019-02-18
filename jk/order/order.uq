@@ -1,6 +1,6 @@
-ACCESS accOrder(Order);
-
-SHEET Order ver 0.3 (
+-- [AccCustomer(create, write, read, list)]
+-- [AccOrder]
+SHEET Order ver 0.6 (
     customer ID Customer not null,
     ARR products (
         product ID Product not null,
@@ -25,6 +25,8 @@ Action submit {
 }
 STATE deliver {
     ACTION finish {
+        table t(a int);
+        into t select 1 as a;
         STATE TO END;
     }
 }

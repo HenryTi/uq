@@ -4,15 +4,22 @@ TUID Face ver 0.3 global (
     unique(str),
 );
 
-TUID BusQueue global (
+TUID BusFrom (
     id,
-    unit int,
-    face ID Face,
     from char(100),
+    sourceId ID,
+
+    unique(from)
+);
+
+TUID BusQueue (
+    id,
+    face ID Face,
+    from ID BusFrom,
     body text,
     date datetime,
 
-    unique (unit, face, id)
+    index face_id (face, id) unique
 );
 
 TUID Joint (
@@ -52,7 +59,45 @@ RETURNS ret (
             from BusQueue as a
                 join Face as b on a.face=b.id
             where b.str=(select c.face from facesTable as c where c.id=face)
-                and a.unit=unit and a.id>msgId
+                -- and a.unit=unit 
+                and a.id>msgId
             limit 1;
+    }
+};
+
+QUERY BusMessageFromQueue (
+    face char(100),
+    queue bigint)
+RETURNS ret (
+    id bigint,
+    from char(100),
+    body text
+) {
+    into ret select a.id, c.from, a.body
+        from BusQueue as a
+            join Face as b on a.face=b.id
+            left join BusFrom as c on a.from=c.id
+        where a.id>queue and b.str=face
+        limit 1;
+};
+
+SYSPROC SaveBusMessage ver 0.8 (
+    _face char(100),
+    _from char(100),
+    _sourceId ID,
+    _body text,
+) {
+    var faceId int;
+    var savedSourceId ID;
+    var fromId ID;
+    set faceId=a.id from Face as a where a.str=_face;
+    set fromId=a.id, savedSourceId=a.sourceId from BusFrom as a where a.from=_from;
+    if savedSourceId is null set savedSourceId=0;
+    if not(faceId is null) and _sourceId>savedSourceId {
+        tuid BusQueue set face=faceId, from=fromId, body=_body, date=$date;
+        if fromId is null
+            tuid BusFrom unique(_from) set sourceId=_sourceId;
+        else
+            tuid BusFrom id(fromId) set sourceId=_sourceId;
     }
 };
