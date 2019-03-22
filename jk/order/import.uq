@@ -14,7 +14,8 @@ TUID Product ver 0.2 from JkProduct (
     unique (discription, packType),
 );
 
-TUID PackType ver 0.2 from JkProduct (
+-- ALL 意味着所有的更新都import过来。否则，只有用到了，才导入
+TUID PackType ver 0.2 from JkProduct ALL (
     id,
     main name char(8) not null,     -- g, ml, mg, kg, m, cm, mm, 套，台，个
     main discription char(20),      -- 说明是 重量，长度，面积，提及，单体

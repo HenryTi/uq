@@ -10,6 +10,30 @@ SHEET Order ver 0.6 (
         amount dec(12,2) not null,
     )
 )
+/*
+Verify {
+    if customer<=0 Fail;
+    foreach products {
+        if product<=0 Fail;
+    }
+}
+*/
+Verify 
+    RETURNS a1 (t int, k char(50))
+    RETURNS a2 (t int, k char(50))
+{
+    if customer<=0 into a1 select 1 as t, 2 as k;
+    foreach products {
+        if product<=0 into a2 select 3 as t, 4 as k;
+    }
+}
+ACTION {
+    foreach products {
+        var a ID;
+        set a = product;
+        set a = 1;
+    }
+}
 Action submit {
     var recId ID, bbb int;
     set bbb = 3 + 5;
@@ -37,3 +61,18 @@ HISTORY hist (
     key k1 ID Product,
     e1 int,
 );
+
+SHEET Order1 ver 0.6 (
+    customer ID Customer not null,
+)
+action {
+    state to end;
+}
+ACTION submit {
+    STATE TO END;
+}
+action a1 {
+    state to end;
+};
+
+
