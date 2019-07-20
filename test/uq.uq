@@ -1,0 +1,102 @@
+UQ [user3-dev]/test version='1.01' author='henry';
+
+BUS bus1 ver 0.2 from /test;
+
+tuid product ver 0.1 (
+    id,
+    name char(50),
+    arr pack (
+        owner,
+        id,
+        main r dec(12,2),
+        r1 dec(12,2),
+    ),
+);
+
+map price (
+    key product ID Product,
+    key pack OF Product.Pack,
+    price dec(12,2),
+);
+
+templet emailTemplet ver 1.3 (a, b, c)
+subject /- sub {{a}} ject -/
+/-gg
+kkkkk {{a}} --## {{c}} ==ddcc
+llll {{b}} {{c}}
+-/;
+
+action act() {
+    var a int;
+    set a=1;
+};
+
+query call1() 
+returns ret(
+    [user] id $user,
+    [t1] id t1
+)
+{
+    into ret select 
+        a.[id] as user,
+        b.[t1] 
+    from [$user] as a left join c as b 
+            on a.id=b.user
+    where 1=1
+    order by a.[id] asc ,b.[t1] asc ;
+};
+-- \r\n\r\nquery [c$page$]([user] id $user,[t1] id t1)page([$order] bigint start 0,[user] id $user,\n[t1] id t1){page select a.[t1] as [$order],a.[user],\na.[t1] from [c] as a where 1=1 and a.[user]=[user] and ([t1] is null or a.[t1]=[t1]) and a.[t1]>$pageStart order by a.[t1] asc limit $pageSize;};\r\n\r\nquery [c$query$]([user] id $user,[t1] id t1)returns ret([user] id $user,\n[t1] id t1){into ret select a.[user],\na.[t1] from [c] as a where a.[user]=[user] and ([t1] is null or a.[t1]=[t1]) order by a.[t1];};\r\n\r\naction [c$add$]([user] id $user,Arr arr1 ([t1] id t1)){foreach arr1 {\r\nbook [c] at([user],[t1]);\r\n}\r\n};\r\n\r\naction [c$del$]([user] id $user,Arr arr1 ([t1] id t1,)){foreach arr1 {\r\ndelete a from [c] as a where 1=1  and a.[user]=[user] and ([t1]=-1 or a.[t1]=[t1]);\r\n}\r\n};\r\n\r\n
+
+action a ver 0.2 () {
+    var a int;
+    /*
+    set a=typeof b;
+    set a=rand();
+    set a=$user;
+    set a=a.no from [$sheet] as a where a.id=1;
+    set a=a.name from [$user] as a where a.id=$user;
+    set a=a.id from [$sheet] as a where a.sheet=typeof b;
+    -- send user email on emailTemplet to '3,23' with a=1, b='3', c='dd';
+    set a=from_unixtime(3);
+    */
+
+    bus bus1.complex1 set a1=1, c3=2, bbba37='a37';
+    bus bus1.complex1 into arrName add a1=3, a2=13, a3=now();
+    bus bus1.complex1 into arrName add a1=4, a2=14, a3=now();
+    bus bus1.complex1 into arrName add a1=5, a2=15, a3=now();
+
+    bus bus1.complex1 into arrName2 add a3='a3', cb2=13, aa3=now();
+    bus bus1.complex1 into arrName2 add a3='b4', cb2=14, aa3=now();
+
+    bus bus1.complex1 send; -- user=1 unit=3;
+
+};
+
+tuid t1 ver 0.1 (
+    id,
+    a char(10),
+    t2 text,
+    index a_index (a),
+);
+
+BOOK b ver 0.2 (
+    key user id [$user],
+    key sheet id [$sheet],    
+    t1 id t1,
+    t2 text,
+    index t1_index (t1),
+);
+
+MAP c ver 0.3 (
+    key user id [$user],
+    key t1 id t1,
+    t2 text,
+    index t1_user (t1, user),
+);
+
+HISTORY h ver 0.4 (
+    date,
+    key t1 id t1,
+    t2 char(20),
+);
+

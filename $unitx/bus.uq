@@ -7,19 +7,21 @@ TUID Face ver 0.3 global (
 TUID BusFrom (
     id,
     from char(100),
-    sourceId ID,
+    sourceId bigint,
 
     unique(from)
 );
 
-TUID BusQueue (
+TUID BusQueue ver 0.2 (
     id,
     face ID Face,
     from ID BusFrom,
+    fromQueueId bigint,
     body text,
-    date datetime,
 
-    index face_id (face, id) unique
+    stamp(update), -- 仅供调试和查找错误之用
+    unique(from, fromQueueId),
+    -- index face_id (face, id) unique,
 );
 
 TUID Joint (
@@ -33,24 +35,41 @@ TUID Joint (
 );
 
 QUERY GetBusMessages ver 1.3 (
-    faces text,
-    ufid text
+    msgStart bigint,
+    faces text,         -- 回车分开的face names
 )
 RETURNS ret (
     id bigint,
     face char(200),
     from char(100),
     body text
-) {
+)
+RETURNS retMax (
+    maxMsgId bigint,
+    maxRows int
+)
+{
     var minId bigint;
     set minId = (unix_timestamp()/3600 - 24*30)*1000000000;
+    if msgStart<minId {
+        set msgStart = minId;
+    }
 
-    table facesTable(key id int, face char(200));
+    table facesTable(key face char(200));
     text faces into facesTable;
 
-    table ufidTable(key face int, key unit int, msgId ID);
-    text ufid into ufidTable;
+    into retMax select 
+        ifnull((select a.id from BusQueue as a order by a.id desc limit 1), 0) as maxMsgId,
+        100 as maxRows;
 
+    into ret select a.id, b.str as face, a.from, a.body
+        from BusQueue as a
+            join Face as b on a.face=b.id
+            join facesTable as c on b.str=c.face
+        where a.id>msgStart
+        order by a.id asc
+        limit 100;
+    /*
     foreach (var face int, unit int, msgId bigint of select face, unit, msgId from ufidTable) {
         if msgId is null or msgId<minId {
             set msgId=minId;
@@ -61,8 +80,9 @@ RETURNS ret (
             where b.str=(select c.face from facesTable as c where c.id=face)
                 -- and a.unit=unit 
                 and a.id>msgId
-            limit 1;
+            limit 10;
     }
+    */
 };
 
 QUERY BusMessageFromQueue (
@@ -81,9 +101,14 @@ RETURNS ret (
         limit 1;
 };
 
+-----------------------------------------------------
+-- SYSPROC 跟 Action 的差别在于：
+-- SysProc 直接参数
+-- Action 从data字符串分解参数
 SYSPROC SaveBusMessage ver 0.8 (
     _face char(100),
     _from char(100),
+    _fromQueueId ID,
     _sourceId ID,
     _body text,
 ) {
@@ -94,7 +119,7 @@ SYSPROC SaveBusMessage ver 0.8 (
     set fromId=a.id, savedSourceId=a.sourceId from BusFrom as a where a.from=_from;
     if savedSourceId is null set savedSourceId=0;
     if not(faceId is null) and _sourceId>savedSourceId {
-        tuid BusQueue set face=faceId, from=fromId, body=_body, date=$date;
+        tuid BusQueue unique(fromId, _fromQueueId) set face=faceId, body=_body;
         if fromId is null
             tuid BusFrom unique(_from) set sourceId=_sourceId;
         else

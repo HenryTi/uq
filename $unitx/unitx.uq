@@ -26,7 +26,7 @@ BOOK sheet (
 
 TUID flow (
     id,
-    base message id message,
+    message id message,
     prev id flow,               -- 上一步操作
     user id user,               -- 经手人
     date datetime,              -- 经手时间
@@ -196,7 +196,7 @@ ACTION sheetMessage (
         from sheet as a join desk as b on a.message=b.message 
         where a.usq=usq and a.sheet=sheet)
     {
-        message oldMsg away toUser;
+        -- message oldMsg away toUser;
         delete from desk where me=toUser and message=oldMsg;
         delete a from sheet as a where a.usq=usq and a.sheet=sheet and a.message=oldMsg;
     }
@@ -214,7 +214,7 @@ ACTION sheetMessage (
         book sheet at(usq, sheet, msg);
         foreach [tos] {
             book desk at([to], msg) set read=0, flow=flowId;    -- 待办任务
-            message msg @ to on desk;
+            -- message msg @ to on desk;
         }
 
         var mtext text;
@@ -230,7 +230,7 @@ ACTION sheetMessage (
             '$')
             from message as a -- join state as b on a.id=b.message
             where a.id=msg;
-        message msg with mtext;
+        -- message msg with mtext;
     }
 };
 
@@ -262,7 +262,7 @@ RETURNS ret(id id)
         subject=subject, discription=discription, content=content,
         date=$date;
     book folder at($user, '$me', msg);          -- 我发出的任务
-    message msg to $user on me;
+    -- message msg to $user on me;
     book folder at($user, '$', msg);            -- 我的全部任务
     foreach [to] {
         if [toUser] is null or [toUser]=0 {
@@ -270,9 +270,9 @@ RETURNS ret(id id)
         }
         tuid flow into flowId set message=msg, prev=0, user=toUser, date=$date, state=startState;
         book desk at([toUser], msg) set read=0, flow=flowId;    -- 待办任务
-        message msg @ toUser on desk;
+        -- message msg @ toUser on desk;
         book folder at(toUser, '$pass', msg);   -- to的pass任务
-        message msg to toUser on pass;
+        -- message msg to toUser on pass;
         book folder at(toUser, '$', msg);       -- to的全部任务
         book branch at(msg, flowId, toUser) set done=0;
     }
@@ -296,10 +296,10 @@ RETURNS ret(id id)
 
     foreach [cc] {
         book folder at(ccUser, '$cc', msg);
-        message msg @ ccUser on cc;
+        -- message msg @ ccUser on cc;
         book folder at(ccUser, '$', msg);
     }
-    message msg with mtext;
+    -- message msg with mtext;
 
     into ret select msg as id;
 };
@@ -309,7 +309,7 @@ ACTION readMessage (
 ) {
     var state char(20);
     book desk at ($user, msg) set read=1;
-    message msg read by $user;
+    -- message msg read by $user;
 };
 
 ACTION actMessage (
@@ -334,7 +334,7 @@ RETURNS ret(ok tinyint)
         set prevState=state from flow where id=flowId;
         delete from branch where message=msg and flow=flowId and to=$user;
         delete from desk where me=$user and message=msg;
-        message msg away $user;
+        -- message msg away $user;
         tuid flow into newFlowId set message=msg, user=$user, date=$date,
             prev=flowId, state=toState, action=action, data=data;
 
@@ -352,7 +352,7 @@ RETURNS ret(ok tinyint)
                     set [user]=$user;
                 }
                 book desk at(user, msg);
-                message msg @ user on desk;
+                -- message msg @ user on desk;
                 book folder at(user, '$pass', msg);
                 book folder at(user, '$', msg);
                 book branch at(msg, newFlowId, user) set done=0;
@@ -373,7 +373,7 @@ RETURNS ret(ok tinyint)
             toState)
             from message as a join state as b on a.id=b.message
             where a.id=msg;
-        message msg with mtext;
+        -- message msg with mtext;
 
         if exists(select a.message from state as a where a.message=msg 
             and (a.branchCount<>branchCount or a.doneCount<>doneCount))
@@ -383,7 +383,7 @@ RETURNS ret(ok tinyint)
                     from folder 
                     where message=msg and tag in ('$me', '$pass', '$cc')) 
             {
-                message msg to toUser on tag;
+                -- message msg to toUser on tag;
             }
         }
 

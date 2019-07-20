@@ -25,3 +25,18 @@ OPEN MAP Price ver 0.2 (
     key pack OF product.Pack not null,
     retail dec(10,2) not null,
 );
+
+QUERY SearchProduct ver 0.4 (
+    key char(50)
+)
+RETURNS ret1 (id ID, discription char(200), packType ID PackType)
+{
+    /-mysql- -- 说明
+        set _key='a';
+    -/
+    
+        into ret1 select a.[id], a.discription, a.packType
+        from (select b.id, b.discription, b.packType from Product as b limit 10) as a 
+        where match(a.discription, a.packType) against (key in boolean mode);
+
+};

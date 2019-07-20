@@ -10,7 +10,7 @@ ACCESS a2 (
 
 -- team, 最小的组织单位
 TUID team (
-    id Id,
+    id,
     no char(20),                    -- 每一个team编号
     main name char(50),
     unique(no),
@@ -18,7 +18,7 @@ TUID team (
 
 -- section = team group
 TUID section (
-    id Id,
+    id,
     main name char(50),
     unique(name),
 );
@@ -31,7 +31,7 @@ MAP sectionTeam ver 0.1 (
 -- 模板。有角色定义，比如，销售一部，二部，或者全国各地分公司，结构大致相同，可以用模板
 -- json格式，不能大于64k字符。
 TUID organization ver 0.9 (
-    id Id,
+    id,
     main name char(50),                      -- 组织结构名称
     unique(name),
     arr post (
@@ -49,7 +49,7 @@ MAP teamOrganization ver 0.1 (
 );
 
 TUID person (
-    id Id,
+    id,
     main name char(100) not null,       -- 如果重名，可以加标识
     user id user,                       -- 登录用户的对应关系
     main nick char(50),                      -- 全名，也许会重复
