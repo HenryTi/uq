@@ -1,19 +1,35 @@
+
 {
+    "query1": {
+        "param": [
+            {"name":"p1", "type":"string"},
+            {"name":"p2", "type":"number"},
+            {"name":"p3", "type":"id"},
+            {"name":"p4", "type":"array", "fields":"schema1"}
+        ],
+        "returns": "complex1"
+    },
     "schema1": [
         {"name": "a1", "type": "string"},
         {"name": "a2", "type": "number"},
-        {"name": "a3", "type": "date"},
+        {"name": "a3", "type": "number"},
         {"name": "a4", "type": "id"}
     ],
     "schema2": [
+        {"name": "b3", "type": "string"},
+        {"name": "cb2", "type": "number"},
+        {"name": "aa3", "type": "number"}
+    ],
+    "schema3": [
         {"name": "a3", "type": "string"},
         {"name": "cb2", "type": "number"},
-        {"name": "aa3", "type": "date"}
+        {"name": "aa3", "type": "id"}
     ],
     "complex1": [
-        {"name": "a1", "type": "string"},
+        {"name": "c1", "type": "string"},
         {"name": "c3", "type": "string"},
         {"name": "bbba37", "type": "string"},
-        {"name": "arrName", "type": "array", "fields": "schema1"}
+        {"name": "arrName", "type": "array", "fields": "schema1"},
+        {"name": "arrName2", "type": "array", "fields": "schema2"}
     ]
 }

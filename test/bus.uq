@@ -1,0 +1,58 @@
+
+BUS bus1 ver 0.3 from /test
+    QUERY query1 {
+        var a int;
+        set a=p2;
+        into BUS select 'sss' as c1,2 as c3,3 as bbba37;
+        
+        into bus.arrname select 'a' as a1, 12 as a2, 13 as a3, 14 as a4;
+        into bus.arrname select 'b' as a1, 22 as a2, 23 as a3, 24 as a4;
+        foreach (var a1 text, a2 dec(36,6), a3 dec(36,6), a4 bigint
+            of select a.a1,a.a2, a.a3, a.a4 from p4 as a )
+        {
+            -- into bus.arrname select a1, a2, a3, a4 from p4;
+            into bus.arrname select a1, a2, a3, a4; -- from p4;
+        }
+
+        into bus.arrname2
+            select 'b3b3' as b3, 222 as cb2, 333 as aa3;
+    };
+
+ACTION testQueryBus ver 0.5 (p int)
+BUS bus1.query1 into tb {
+    set p1='1';
+    set p2=3;
+    set p3=5;
+    into p4 select 'x11' as a1, 21 as a2, 31 as a3;
+    into p4 select 'x12' as a1, 22 as a2, 32 as a3;
+}
+RETURNS main (
+    p1 text,
+    p2 dec(36,6),
+    p3 id,
+)
+RETURN retArr (
+    a1 text,
+    a2 dec(36,6),
+    a3 dec(36,6),
+    a4 id
+)
+RETURN retArr2 (
+    b3 text,
+    cb2 dec(36,6),
+    aa3 dec(36,6)
+)
+{
+    var va1 int;
+    var vs1 varchar(100);
+    set va1=p;
+    foreach tb {
+        into main select p1, p2, p3;
+    }
+    foreach tb.arrname {
+        into retArr select a1,a2,a3,a4;
+    }
+    foreach tb.arrname2 {
+        into retArr2 select b3, cb2, aa3;
+    }
+};

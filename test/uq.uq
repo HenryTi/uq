@@ -1,6 +1,6 @@
 UQ [user3-dev]/test version='1.01' author='henry';
 
-BUS bus1 ver 0.2 from /test;
+-- BUS bus1 ver 0.2 from /test;
 
 tuid product ver 0.1 (
     id,
@@ -77,7 +77,12 @@ tuid t1 ver 0.1 (
     a char(10),
     t2 text,
     index a_index (a),
-);
+) on save {
+    var va int, vb char(10);
+    set va=id;
+    set vb = a;
+    set vb = t2;
+};
 
 BOOK b ver 0.2 (
     key user id [$user],
@@ -96,7 +101,7 @@ MAP c ver 0.3 (
 
 HISTORY h ver 0.4 (
     date,
-    key t1 id t1,
+    t1 id t1,
     t2 char(20),
 );
 
