@@ -1,4 +1,8 @@
-USQ devappApi version='1.01' author='henry';
+UQ devappApi version='1.01' author='henry';
+
+ROLE a:'系统管理权', b:'人事管理', c:'组长';
+
+// abcdef -- gh ijkl mnop
 
 //http://do.thplay.cn/tonva/tv.bus
 // 可以加注释的
@@ -23,7 +27,7 @@ BUS bus1 from /test -- 'http://do.thplay.cn/tonva/tv.bus'
         }
     };
 
-TUID 商品 GLOBAL (
+TUID 商品 +abc GLOBAL (
     id,
     base b1 id article,
     main name char(50),

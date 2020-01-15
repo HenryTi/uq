@@ -1,5 +1,7 @@
 UQ [user3-dev]/test version='1.01' author='henry';
 
+ROLE a:'系统管理权', b:'人事管理', c:'组长', e:'领导';
+
 -- BUS bus1 ver 0.2 from /test;
 
 tuid product ver 0.1 (
@@ -60,15 +62,13 @@ action a ver 0.2 () {
     set a=from_unixtime(3);
     */
 
-    bus bus1.complex1 set a1=1, c3=2, bbba37='a37';
-    bus bus1.complex1 into arrName add a1=3, a2=13, a3=now();
-    bus bus1.complex1 into arrName add a1=4, a2=14, a3=now();
-    bus bus1.complex1 into arrName add a1=5, a2=15, a3=now();
+    -- bus bus1.complex1 set a1=1, c3=2, bbba37='a37';
+    -- bus bus1.complex1 into arrName add a1=3, a2=13, a3=now();
+    -- bus bus1.complex1 into arrName add a1=4, a2=14, a3=now();
+    -- bus bus1.complex1 into arrName add a1=5, a2=15, a3=now();
 
-    bus bus1.complex1 into arrName2 add a3='a3', cb2=13, aa3=now();
-    bus bus1.complex1 into arrName2 add a3='b4', cb2=14, aa3=now();
-
-    bus bus1.complex1 send; -- user=1 unit=3;
+    -- bus bus1.complex1 into arrName2 add a3='a3', cb2=13, aa3=now();
+    -- bus bus1.complex1 into arrName2 add a3='b4', cb2=14, aa3=now();
 
 };
 

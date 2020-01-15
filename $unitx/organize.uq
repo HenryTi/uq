@@ -208,33 +208,6 @@ ACTION saveEntityOpPost ver 1.8 (
     }
 };
 
-/*
-QUERY getSheetTo (
-    usq int,
-    sheetName char(50),
-    stateName char(50),
-    -- 应该在调用这个存储过程之前就处理好了，所以不需要下面两个参数
-    -- origin id,                  -- 创建单据的人
-    -- reply id                    -- 回复人，上一个状态发送人
-)
-RETURNS ret (
-    to ID                           -- 接收单据状态的人
-)
-{
-    -- var opId ID;
-    -- set id into opId from entityOp where entityName=sheetName and opName=stateName;
-    into ret select distinct c.user as to
-        from entityOpPost as a
-            join teamPerson as b 
-                on a.post=b.post
-                    and (a.team=0 or a.team=b.team)
-                    and (a.section=0 or exists(select section from sectionTeam where section=a.section and (a.team=0 or team=a.team)))
-            join person as c on b.person=c.id
-            join entityOp as e on a.entityOp=e.id
-        where e.usq=usq and e.entity=sheetName and e.op=stateName;
-};
-*/
-
 -- getEntityAccess = getSheetTo 完全相同的两个查询
 QUERY getEntityAccess (
     usq int,

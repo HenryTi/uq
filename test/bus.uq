@@ -23,21 +23,21 @@ BUS bus1.query1 into tb {
     set p1='1';
     set p2=3;
     set p3=5;
-    into p4 select 'x11' as a1, 21 as a2, 31 as a3;
-    into p4 select 'x12' as a1, 22 as a2, 32 as a3;
+    -- into p4 select 'x11' as a1, 21 as a2, 31 as a3;
+    -- into p4 select 'x12' as a1, 22 as a2, 32 as a3;
 }
 RETURNS main (
     p1 text,
     p2 dec(36,6),
-    p3 id,
+    p3 id
 )
-RETURN retArr (
+RETURNS retArr (
     a1 text,
     a2 dec(36,6),
     a3 dec(36,6),
     a4 id
 )
-RETURN retArr2 (
+RETURNS retArr2 (
     b3 text,
     cb2 dec(36,6),
     aa3 dec(36,6)
@@ -47,7 +47,7 @@ RETURN retArr2 (
     var vs1 varchar(100);
     set va1=p;
     foreach tb {
-        into main select p1, p2, p3;
+        into main select 1 as p1, 2 as p2, 3 as p3;
     }
     foreach tb.arrname {
         into retArr select a1,a2,a3,a4;

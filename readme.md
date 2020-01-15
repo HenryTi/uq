@@ -178,6 +178,37 @@ pending是一种过渡帐。待处理的数据，可以存放在这个帐上。�
 +   BUS
 +   SEND
 
+
+## BUS 数据总线
+### 说明
+独立uq之间交换数据的格式。
+### 代码样例
+    {
+        "schema1": [
+            {"name": "a1", "type": "string"},
+            {"name": "a2", "type": "number"},
+            {"name": "a3", "type": "date"}
+        ],
+        "schema2": [
+            {"name": "a3", "type": "string"},
+            {"name": "cb2", "type": "number"},
+            {"name": "aa3", "type": "number"}
+        ],
+        "schema3": [
+            {"name": "a3", "type": "string"},
+            {"name": "cb2", "type": "number"},
+            {"name": "aa3", "type": "number"}
+        ],
+        "complex1": [
+            {"name": "a1", "type": "string"},
+            {"name": "c3", "type": "string"},
+            {"name": "bbba37", "type": "string"},
+            {"name": "arrName", "type": "array", "fields": "schema1"},
+            {"name": "arrName2", "type": "array", "fields": "schema2"}
+        ]
+    }
+
+
 ## Markdown 表格样例
 
 ### 以|描述的表格

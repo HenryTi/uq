@@ -84,7 +84,7 @@ RETURNS ret (
 )
 {
     var minId bigint;
-    set minId = (unix_timestamp()/3600 - 24*30)*1000000000;
+    set minId = (unix_timestamp()/3600 - 24*60)*1000000000;
     if msgStart<minId {
         set msgStart = minId;
     }
