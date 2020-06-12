@@ -192,7 +192,7 @@ ACTION sheetMessage (
 ) {
     -- 删去之前的sheet相关的message
     foreach (var toUser id, oldMsg id message
-        of select b.me, a.message
+        of select b.me as toUser, a.message as oldMsg
         from sheet as a join desk as b on a.message=b.message 
         where a.usq=usq and a.sheet=sheet)
     {
@@ -379,7 +379,7 @@ RETURNS ret(ok tinyint)
             and (a.branchCount<>branchCount or a.doneCount<>doneCount))
         {
             foreach (var toUser bigint, tag char(8) of 
-                select me, tag 
+                select me as toUser, tag 
                     from folder 
                     where message=msg and tag in ('$me', '$pass', '$cc')) 
             {

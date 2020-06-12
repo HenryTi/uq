@@ -29,32 +29,42 @@ TUID BusQueue ver 0.2 (
 -- SYSPROC 跟 Action 的差别在于：
 -- SysProc 直接参数
 -- Action 从data字符串分解参数
-SYSPROC WriteBusQueue ver 0.8 (
+SYSPROC WriteBusQueue ver 1.3 (
     _face char(100),
     _from char(100),
     _fromQueueId ID,
     _version int,
     _body text,
-) {
+)
+RETURNS ret (
+	queueId BIGINT
+)
+{
     var faceId int;
-    var savedSourceId ID;
+	var curHour BIGINT;
+	var savedBusQueueHour BIGINT;
+	var queueId BIGINT;
+	-- const big = 1000000000;
+
     var fromId ID;
     tuid Face into faceId unique(_face);
     tuid BusFrom into fromId unique(_from);
 
-    tuid BusQueue unique(fromId, _fromQueueId) set face=faceId, body=_body, version=_version;
-    /*
-    set faceId=a.id from Face as a where a.str=_face;
-    set fromId=a.id, savedSourceId=a.sourceId from BusFrom as a where a.from=_from;
-    if savedSourceId is null set savedSourceId=0;
-    if not(faceId is null) and _sourceId>savedSourceId {
-        tuid BusQueue unique(fromId, _fromQueueId) set face=faceId, body=_body;
-        if fromId is null
-            tuid BusFrom unique(_from) set sourceId=_sourceId;
-        else
-            tuid BusFrom id(fromId) set sourceId=_sourceId;
-    }
-    */
+	set curHour=unix_timestamp()/3600;
+	setting global 'bus_queue_hour' bigint to savedBusQueueHour;
+	if savedBusQueueHour is null {
+		set savedBusQueueHour=0;
+	}
+	if curHour>savedBusQueueHour {
+		setting global 'bus_queue_hour' bigint = curHour;
+		tuid BusQueue id curHour*1000000000;
+	}
+
+	-- flag 如果对应unique值的id已经存在，则queueid返回负值，同时并不更新tuid
+	-- 2020-06-11: 调整了tuid flag into的sql代码。如果unique对应的id已经存在，则不更新
+	tuid BusQueue flag queueId unique(fromId, _fromQueueId)
+		set face=faceId, body=_body, version=_version;
+	INTO ret select queueId;
 };
 
 TUID Joint (
@@ -133,6 +143,13 @@ RETURNS ret (
             left join BusFrom as c on a.from=c.id
         where a.id>queue and b.str=face
         limit 1;
+	if not exists(select 1 from ret where id>0) {
+		into ret select a.id, null as [from], null as [body]
+			from BusQueue as a
+			where a.id>0
+			order by a.id desc
+			limit 1;
+	}
 };
 
 -----------------------------------------------------
