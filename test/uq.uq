@@ -1,4 +1,4 @@
-UQ [user3-dev]/test version='1.01' author='henry';
+UQ [BizDev]/test version='1.01' author='henry';
 
 ROLE a:'系统管理权', b:'人事管理', c:'组长', e:'领导';
 

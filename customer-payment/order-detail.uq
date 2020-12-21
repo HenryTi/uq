@@ -1,0 +1,92 @@
+ENUM EnumPendingDone (pending=0, done=1, cancel=-1, red=-2);
+
+MAP OrderDetail (
+	KEY sheet ID,
+	KEY row SMALLINT,
+	customer ID,
+	product ID,
+	pack ID,
+	quantity DEC(14,2),
+	amount DEC(14,2),
+);
+
+PENDING OrderDetailReceivable (
+	id,
+	done,
+	KEY customer ID,
+	sheet ID,
+	row SMALLINT,
+	amount DEC(14,2),
+);
+
+PENDING OrderDetailDeliver (
+	id,
+	done,
+	KEY customer ID,
+	sheet ID,
+	row SMALLINT,
+	quantity DEC(14,2),
+);
+
+PENDING OrderDetailInvoice (
+	id,
+	done,
+	KEY customer ID,
+	sheet ID,
+	row SMALLINT,
+	amount DEC(14,2),
+);
+
+PENDING OrderDetailReturn (
+	id,
+	done,
+	KEY customer ID,
+	sheet ID,
+	row SMALLINT,
+	returnShould DEC(14,2),
+);
+
+QUERY CustomerPendingDeliver (
+	customer ID,
+)
+RETURNS ret (
+	id ID,
+	sheet ID,
+	row SMALLINT,
+	quantity DEC(14,2),
+) {
+	INTO ret SELECT a.id, a.sheet, a.row, a.quantity
+		FROM OrderDetailDeliver as a
+		WHERE a.customer=customer AND a.done=EnumPendingDone.pending
+		Order By a.id DESC;
+};
+
+QUERY CustomerPendingInvoice (
+	customer ID,
+)
+RETURNS ret (
+	id ID,
+	sheet ID,
+	row SMALLINT,
+	amount DEC(14,2),
+) {
+	INTO ret SELECT a.id, a.sheet, a.row, a.amount
+		FROM OrderDetailInvoice as a
+		WHERE a.customer=customer AND a.done=EnumPendingDone.pending
+		Order By a.id DESC;
+};
+
+QUERY CustomerPendingReceivable (
+	customer ID,
+)
+RETURNS ret (
+	id ID,
+	sheet ID,
+	row SMALLINT,
+	amount DEC(14,2),
+) {
+	INTO ret SELECT a.id, a.sheet, a.row, a.amount
+		FROM OrderDetailReceivable as a
+		WHERE a.customer=customer AND a.done=EnumPendingDone.pending
+		Order By a.id DESC;
+};

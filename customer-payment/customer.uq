@@ -1,0 +1,81 @@
+-- PENDING Receivable +(customer:1, product:2, pack:2, price:3.5) to recId;
+-- PENDING Receivable -at recId;
+-- PENDING Receivable -(price:2.5) at recId done [del|red|cancel|] if 3*2=1;
+-- select 语句一定要加 done 字段到条件。done=0 pending，done=1 done，done=-1 cancel, done=-2 red
+
+BOOK CustomerBalance (
+	KEY customer ID,
+	deposit DEC(14,2),
+	receivable DEC(14,2),
+	invoiceShould DEC(14,2),
+	invoicePre DEC(14,2),
+);
+
+ENUM EnumCustomerAction (
+	order			=	1,			-- 下订单
+	confirm			=	2,			-- 确认，公司内部确认。直接支付没有这个过程
+	payDirect 		=	10,			-- 直接支付，针对订单直接支付
+	payReceivable	=	11,			-- 付应收
+	deposit			=	12,			-- 预付
+	payReturn		=	13,			-- 退款
+	invoice			=	20,			-- 开票
+	invoicePre		=	21,			-- 预开票
+	deliver			=	30,			-- 发货
+	return			=	31,			-- 退货
+	cancel			=	100,		-- 取消，在确认订单之前。确认之后，只能做退货
+	red				=	101,		-- 红冲，订单发生错误，修改订单
+);
+
+History CustomerHistory (
+	Date,
+	customer ID,
+	action TINYINT DEFAULT 1,
+	sheet ID,
+	row SMALLINT DEFAULT 0,			-- 如果不涉及订单行明细，则0
+);
+
+SHEET Deposit (
+	customer ID,
+	deposit DEC(14,2),
+	receiptNo CHAR(20),
+	bankReceiptNo CHAR(20),
+)
+ACTION confirm {
+	BOOK CustomerBalance AT(customer) SET deposit+=deposit;
+	HISTORY CustomerHistory SET customer=customer, sheet=$id, action=EnumCustomerAction.deposit;
+	STATE TO End;
+};
+
+SHEET Invoice (
+	customer ID,
+	ARR detail (
+		invoicePendingId ID,
+		amount DEC(14,2),
+	),
+)
+ACTION confirm {
+	FOREACH detail {
+		PENDING OrderDetailInvoice -(amount:amount) at invoicePendingId 
+			Done IF (SELECT amount FROM OrderDetailInvoice WHERE id=invoicePendingId)=0;
+		BOOK CustomerBalance AT(customer) SET invoiceShould+=amount;
+	}
+	HISTORY CustomerHistory SET customer=customer, sheet=$id, action=EnumCustomerAction.invoice;
+	STATE TO End;
+};
+
+SHEET Deliver (
+	customer ID,
+	ARR detail (
+		pendingId ID,
+		quantity DEC(14,2),
+	),
+)
+ACTION confirm {
+	FOREACH detail {
+		PENDING OrderDetailDeliver -(quantity:quantity) at pendingId 
+			Done IF (SELECT quantity FROM OrderDetailDeliver WHERE id=pendingId)=0;
+		HISTORY CustomerHistory 
+			SET customer=customer, sheet=$id, row=$row, action=EnumCustomerAction.deliver;
+	}
+	STATE TO End;
+};

@@ -15,6 +15,7 @@ TUID BusFrom (
 TUID BusQueue ver 0.2 (
     id,
     face ID Face,
+	to BIGINT,
     from ID BusFrom,
     fromQueueId bigint,
     version int,
@@ -31,6 +32,7 @@ TUID BusQueue ver 0.2 (
 -- Action 从data字符串分解参数
 SYSPROC WriteBusQueue ver 1.3 (
     _face char(100),
+	_to bigint,
     _from char(100),
     _fromQueueId ID,
     _version int,
@@ -63,7 +65,7 @@ RETURNS ret (
 	-- flag 如果对应unique值的id已经存在，则queueid返回负值，同时并不更新tuid
 	-- 2020-06-11: 调整了tuid flag into的sql代码。如果unique对应的id已经存在，则不更新
 	tuid BusQueue flag queueId unique(fromId, _fromQueueId)
-		set face=faceId, body=_body, version=_version;
+		set to=_to, face=faceId, body=_body, version=_version;
 	INTO ret select queueId;
 };
 
@@ -88,6 +90,7 @@ RETURNS retMax (
 RETURNS ret (
     id bigint,
     face char(200),
+	to bigint,
     from char(100),
     version int,
     body text
@@ -106,7 +109,7 @@ RETURNS ret (
         ifnull((select a.id from BusQueue as a order by a.id desc limit 1), 0) as maxMsgId,
         100 as maxRows;
 
-    into ret select a.id, b.str as face, a.from, a.version, a.body
+    into ret select a.id, b.str as face, a.to, a.from, a.version, a.body
         from BusQueue as a
             join Face as b on a.face=b.id
             join facesTable as c on b.str=c.face
@@ -134,10 +137,11 @@ QUERY BusMessageFromQueue (
     queue bigint)
 RETURNS ret (
     id bigint,
+	to bigint,
     from char(100),
     body text
 ) {
-    into ret select a.id, c.from, a.body
+    into ret select a.id, a.to, c.from, a.body
         from BusQueue as a
             join Face as b on a.face=b.id
             left join BusFrom as c on a.from=c.id

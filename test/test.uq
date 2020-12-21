@@ -1,0 +1,46 @@
+BUS Notes ver 0.3 from /notes;
+
+QUERY Test ver 0.2 (
+	aB INT
+)
+RETURNS ret (
+	aE int,
+	cD int,
+) {
+	into ret select 1 as ae, 2 as Cd;
+};
+
+TUID TestTuid ver 0.1 (
+	id,
+	name char(100),
+	t int,
+	unique(name),
+);
+
+TUID Subject (
+	id,
+	name char(100),
+	discription char(100),
+	unique(name),
+);
+
+ACTION Notify ver 0.2 (
+	subject CHAR(100),
+	discription TEXT,
+	delta DEC(16,4),
+	balance DEC(16, 4)
+) {
+	Tuid TestTuid id 1 unique('a') set t=2;
+	Bus Notes.Item SET subject=subject, memo=discription
+		, delta=delta, balance=balance;
+	Bus Notes.Item to $user;
+};
+
+ACTION BusSubject (
+	id ID,
+	name CHAR(100), 
+	discription CHAR(100),
+) {
+	Bus Notes.Subject SET id=id, name=name, discription=discription;
+	Bus Notes.Subject To $user;
+};

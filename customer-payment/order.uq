@@ -1,0 +1,33 @@
+SHEET Order Ver 0.1 (
+	customer ID,
+	Arr Detail (
+		product ID,
+		pack ID,
+		quantity DEC(14,2),
+		amount DEC(14,2),
+	),
+)
+ACTION {
+	FOREACH Detail {
+		BOOK OrderDetail AT($id, $row)
+			SET customer=customer, product=product, pack=pack, quantity=quantity, amount=amount;
+	} 
+	HISTORY CustomerHistory 
+		SET customer=customer, action=EnumCustomerAction.order, sheet=$id;
+}
+ACTION confirm {
+	FOREACH Detail {
+		PENDING OrderDetailInvoice +(customer:customer, sheet:$id, row:$row, amount:amount);
+		PENDING OrderDetailDeliver +(customer:customer, sheet:$id, row:$row, quantity:quantity);
+		PENDING OrderDetailReceivable +(customer:customer, sheet:$id, row:$row, amount:amount);
+	} 
+	HISTORY CustomerHistory 
+		SET customer=customer, action=EnumCustomerAction.confirm, sheet=$id;
+	STATE TO End;
+}
+ACTION directPay {
+	FOREACH Detail {
+		PENDING OrderDetailDeliver +(customer:customer, sheet:$id, row:$row, quantity:quantity);
+	}
+	STATE TO End;
+};
